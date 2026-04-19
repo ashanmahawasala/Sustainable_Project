@@ -1,6 +1,6 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
-import footerLogo from '../../assets/Logo01.png';
+import footerLogo from '../../assets/logo1.png';
 
 const Footer = () => {
   return (

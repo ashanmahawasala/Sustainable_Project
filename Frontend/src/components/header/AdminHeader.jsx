@@ -9,7 +9,7 @@ import {
   Settings,
   Home,
 } from 'lucide-react';
-import myLogo from '../../assets/logo03.png';
+import myLogo from '../../assets/logo3.png';
 import API from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 

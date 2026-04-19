@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Menu, X } from 'lucide-react';
-import myLogo from '../../assets/logo03.png';
+import myLogo from '../../assets/logo3.png';
 
 const LandingPageHeader = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { User, Menu, X, Briefcase, CheckCircle, XCircle, Settings, Home, LogOut } from 'lucide-react';
-import myLogo from '../../assets/logo03.png';
+import myLogo from '../../assets/logo3.png';
 import API from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
