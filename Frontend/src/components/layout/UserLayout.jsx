@@ -1,0 +1,22 @@
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import UserHeader from '../header/UserHeader';
+import Footer from '../footer/Footer';
+
+const UserLayout = () => {
+  return (
+    <div className="flex flex-col min-h-screen bg-slate-50/50">
+      
+      <UserHeader />
+
+      <main className="flex-grow pt-8 px-4 sm:px-6 lg:px-8">
+        <Outlet />
+      </main>
+
+      <Footer />
+
+    </div>
+  );
+};
+
+export default UserLayout;
