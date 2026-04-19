@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  // Configure via Vite env var if needed, otherwise default to backend's typical dev port.
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5050/api',
+  baseURL: import.meta.env.VITE_API_URL + "/api"
 });
 
 // Optional dev override (avoid hard-coding secrets in source): set `VITE_DEV_TOKEN` if you need one.
