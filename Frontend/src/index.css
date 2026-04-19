@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* ========================================================
+   EXPLICIT @FONT-FACE DECLARATIONS (SLTMobitel Method)
+   ======================================================== */
+
+/* Poppins Light (300) */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLDz8Z1xlFd2JQEk.woff2) format('woff2');
+}
+
+/* Poppins Regular (400) */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecnFHGPc.woff2) format('woff2');
+}
+
+/* Poppins Medium (500) */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLGT9Z1xlFd2JQEk.woff2) format('woff2');
+}
+
+/* Poppins SemiBold (600) */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLEj6Z1xlFd2JQEk.woff2) format('woff2');
+}
+
+/* Poppins Bold (700) */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLCz7Z1xlFd2JQEk.woff2) format('woff2');
+}
+
+/* ========================================================
+   APPLY TO ENTIRE APP
+   ======================================================== */
+@layer base {
+  html {
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+/* ========================================================
+   UTILITIES
+   ======================================================== */
+@layer utilities {
+  .bg-brand-gradient {
+    background: linear-gradient(135deg, #0284c7 0%, #10b981 100%);
+  }
+
+  .text-brand-gradient {
+    background-image: linear-gradient(135deg, #0284c7 0%, #10b981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
