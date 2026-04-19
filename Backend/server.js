@@ -10,7 +10,6 @@ import impactLogRoutes from "./routes/impactLogRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
 import holidayRoutes from "./routes/holidayRoutes.js";
-
 import usersRoutes from "./routes/users.js";
 import adminRoutes from "./routes/admin.js";
 import { notFound, errorHandler } from "./middleware/error.middleware.js";
@@ -27,6 +26,16 @@ const clientUrls = (
   .map((s) => s.trim())
   .filter(Boolean);
 
+const isAllowedVercelOrigin = (origin) => {
+  try {
+    const { protocol, hostname } = new URL(origin);
+    if (protocol !== "https:") return false;
+    return hostname === "vercel.app" || hostname.endsWith(".vercel.app");
+  } catch {
+    return false;
+  }
+};
+
 const limiter = rateLimit({
   windowMs: 60 * 1000,
   max: 80,
@@ -40,6 +49,7 @@ app.use(
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
       if (clientUrls.includes(origin)) return callback(null, true);
+      if (isAllowedVercelOrigin(origin)) return callback(null, true);
       return callback(new Error(`Not allowed by CORS: ${origin}`));
     },
     credentials: true,
