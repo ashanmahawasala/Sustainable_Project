@@ -83,6 +83,11 @@ export const getHolidayComparison = (year = new Date().getFullYear()) =>
 export const getImpactLogs = (filters = {}) => API.get('/impact-logs', { params: filters });
 export const getSettings = () => API.get('/settings');
 export const updateSettings = (data) => API.put('/settings', data);
+export const updateImpactLog = (id, data) =>
+  API.put(`/impact-logs/${id}`, data);
+
+export const deleteImpactLog = (id) =>
+  API.delete(`/impact-logs/${id}`);
 
 // ================= EWASTE APIs =================
 export const createEwasteItem = (data) =>

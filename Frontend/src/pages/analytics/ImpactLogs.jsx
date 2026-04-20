@@ -13,8 +13,14 @@ import {
   SlidersHorizontal,
   CalendarRange,
   AlertTriangle,
+  Pencil,
+  Trash2,
 } from 'lucide-react';
-import { getImpactLogs } from '../../services/api';
+import {
+  getImpactLogs,
+  updateImpactLog,
+  deleteImpactLog,
+} from '../../services/api';
 
 import recordBanner from '../../assets/RecordBanner.png';
 
@@ -32,6 +38,12 @@ const ImpactLogs = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchError, setSearchError] = useState('');
   const [filterMessage, setFilterMessage] = useState('');
+
+  const [selectedLog, setSelectedLog] = useState(null);
+  const [editForm, setEditForm] = useState({
+    weightKg: '',
+  });
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!filterMessage) return undefined;
@@ -169,6 +181,66 @@ const ImpactLogs = () => {
     setSearchError('');
   };
 
+  const handleEditClick = (log) => {
+    setSelectedLog(log);
+    setEditForm({
+      weightKg: log.weightKg ?? '',
+    });
+  };
+
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!selectedLog) return;
+
+    if (editForm.weightKg === '' || Number(editForm.weightKg) <= 0) {
+      alert('Weight must be greater than 0');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+
+      const response = await updateImpactLog(selectedLog._id, {
+        weightKg: Number(editForm.weightKg),
+      });
+
+      setLogs((prev) =>
+        prev.map((item) =>
+          item._id === selectedLog._id ? response.data : item
+        )
+      );
+
+      setSelectedLog(null);
+      setEditForm({ weightKg: '' });
+    } catch (error) {
+      console.error('Failed to update impact log:', error);
+      alert(error?.response?.data?.message || 'Failed to update impact log');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete this impact log?'
+    );
+    if (!confirmed) return;
+
+    try {
+      await deleteImpactLog(id);
+      setLogs((prev) => prev.filter((item) => item._id !== id));
+
+      if (selectedLog?._id === id) {
+        setSelectedLog(null);
+        setEditForm({ weightKg: '' });
+      }
+    } catch (error) {
+      console.error('Failed to delete impact log:', error);
+      alert(error?.response?.data?.message || 'Failed to delete impact log');
+    }
+  };
+
   return (
     <PageShell
       banner={recordBanner}
@@ -183,8 +255,9 @@ const ImpactLogs = () => {
           Impact Logs
         </h2>
         <p className="mt-3 text-slate-600 max-w-3xl mx-auto leading-7">
-          Review all impact activity in one operational workspace, with a clearer view of
-          environmental savings, material flow, and action-level performance across the platform.
+          Review all impact activity in one operational workspace, with a clearer
+          view of environmental savings, material flow, and action-level
+          performance across the platform.
         </p>
       </div>
 
@@ -210,9 +283,9 @@ const ImpactLogs = () => {
             </h3>
 
             <p className="mt-4 text-slate-600 leading-8 max-w-2xl">
-              Filter impact records by action and category, inspect platform-wide material
-              movement, and monitor environmental value through a cleaner and more professional
-              administrative view.
+              Filter impact records by action and category, inspect platform-wide
+              material movement, and monitor environmental value through a cleaner
+              and more professional administrative view.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -311,10 +384,11 @@ const ImpactLogs = () => {
                 Records Explorer
               </p>
               <h3 className="mt-2 text-xl font-bold text-slate-950">
-                Platform Activity Register
+                Impact Logs Management
               </h3>
               <p className="mt-1 text-sm text-slate-500">
-                Search and filter impact activities by action, category, and record details.
+                Search, update, and delete impact activities by action, category,
+                and record details.
               </p>
             </div>
 
@@ -333,7 +407,9 @@ const ImpactLogs = () => {
                   }`}
                 />
                 {searchError && (
-                  <p className="mt-2 text-xs font-medium text-red-600">{searchError}</p>
+                  <p className="mt-2 text-xs font-medium text-red-600">
+                    {searchError}
+                  </p>
                 )}
               </div>
 
@@ -393,13 +469,16 @@ const ImpactLogs = () => {
                 <th className="px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 text-right">
                   CO₂ Averted
                 </th>
+                <th className="px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400 text-center">
+                  Actions
+                </th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-slate-100">
               {filteredLogs.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-8 py-20 text-center">
+                  <td colSpan="7" className="px-8 py-20 text-center">
                     <div className="mx-auto max-w-md">
                       <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
                         <FileText className="w-7 h-7" />
@@ -408,8 +487,8 @@ const ImpactLogs = () => {
                         No records found
                       </h4>
                       <p className="mt-2 text-sm leading-7 text-slate-500">
-                        There are no impact logs matching the current filters or search term.
-                        Adjust the filters to broaden the result set.
+                        There are no impact logs matching the current filters or
+                        search term. Adjust the filters to broaden the result set.
                       </p>
                     </div>
                   </td>
@@ -458,6 +537,26 @@ const ImpactLogs = () => {
                         <ArrowUpRight className="w-4 h-4" />
                       </span>
                     </td>
+
+                    <td className="px-8 py-5 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => handleEditClick(log)}
+                          className="inline-flex items-center gap-1 rounded-lg bg-blue-100 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-200"
+                        >
+                          <Pencil className="w-4 h-4" />
+                          Edit
+                        </button>
+
+                        <button
+                          onClick={() => handleDelete(log._id)}
+                          className="inline-flex items-center gap-1 rounded-lg bg-red-100 px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-200"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Delete
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))
               )}
@@ -465,6 +564,80 @@ const ImpactLogs = () => {
           </table>
         </div>
       </div>
+
+      {selectedLog && (
+        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-md">
+          <h3 className="text-lg font-bold text-slate-900 mb-4">
+            Edit Impact Log
+          </h3>
+
+          <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div className="rounded-xl bg-slate-50 p-4">
+              <p className="text-slate-500">User</p>
+              <p className="font-semibold text-slate-900">
+                {selectedLog.userName}
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-slate-50 p-4">
+              <p className="text-slate-500">Action</p>
+              <p className="font-semibold text-slate-900">
+                {selectedLog.actionType}
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-slate-50 p-4">
+              <p className="text-slate-500">Category</p>
+              <p className="font-semibold text-slate-900">
+                {selectedLog.category}
+              </p>
+            </div>
+          </div>
+
+          <form
+            onSubmit={handleUpdateSubmit}
+            className="flex flex-col md:flex-row gap-4 items-start md:items-end"
+          >
+            <div className="w-full md:w-64">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Weight (kg)
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                min="0.1"
+                value={editForm.weightKg}
+                onChange={(e) =>
+                  setEditForm({ ...editForm, weightKg: e.target.value })
+                }
+                className="w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
+                placeholder="Enter weight"
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="submit"
+                disabled={submitting}
+                className="rounded-xl bg-[#0f55a7] px-5 py-3 text-white font-semibold hover:bg-[#0c4688] disabled:opacity-60"
+              >
+                {submitting ? 'Updating...' : 'Update'}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedLog(null);
+                  setEditForm({ weightKg: '' });
+                }}
+                className="rounded-xl bg-slate-200 px-5 py-3 text-slate-700 font-semibold hover:bg-slate-300"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </PageShell>
   );
 };
