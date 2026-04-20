@@ -64,6 +64,7 @@ export const createRequest = async (req, res) => {
        userName: user.fullName, // ✅ ADD THIS
       ewasteItemId: item._id,
       itemName: `${item.brand} ${item.deviceType}`,
+      deviceType: item.deviceType,
       // ===== NEW: ewaste item details saved into request =====
       condition: item.condition,
       age: item.age,
@@ -199,17 +200,27 @@ export const updateStatus = async (req, res) => {
       const settings = await getOrCreateSettings();
       const factor = settings.co2FactorPerKg ?? 3;
 
-      const weightKg = request.quantity * 0.5;
+      const perUnitWeightKg =
+        Number(request.weight) > 0
+          ? Number(request.weight)
+          : Number(item?.weight) > 0
+          ? Number(item.weight)
+          : 0.5;
+
+      const weightKg = Number(request.quantity || 1) * perUnitWeightKg;
       const co2SavedKg = weightKg * factor;
+
+      const category =
+        request.deviceType?.trim() || item?.deviceType?.trim() || "Ewaste";
 
       await ImpactLog.create({
         userId: request.userId, // customer
         userName: request.userName,
 
-        recyclerId: req.user._id.toString(), // 🔥 IMPORTANT
+        recyclerId: (request.recyclerId || req.user._id).toString(),
 
         actionType: "RECYCLE",
-        category: "EWASTE",
+        category,
         weightKg,
         co2SavedKg,
       });

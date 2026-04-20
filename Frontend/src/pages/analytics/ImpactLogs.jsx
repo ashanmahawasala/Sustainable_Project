@@ -27,7 +27,18 @@ import recordBanner from '../../assets/RecordBanner.png';
 import { PageShell, SummaryCard } from '../../shared/PageShell';
 
 const VALID_ACTIONS = ['RECYCLE', 'DONATE', 'SELL'];
-const VALID_CATEGORIES = ['Laptop', 'Phone', 'Battery', 'Cable', 'CRT', 'PCB'];
+const VALID_CATEGORIES = [
+  'Laptop',
+  'Mobile',
+  'Tablet',
+  'TV',
+  'Other',
+  'Phone',
+  'Battery',
+  'Cable',
+  'CRT',
+  'PCB',
+];
 const MAX_SEARCH_LENGTH = 100;
 
 const ImpactLogs = () => {
@@ -436,6 +447,10 @@ const ImpactLogs = () => {
                 >
                   <option value="">All Categories</option>
                   <option value="Laptop">Laptop</option>
+                  <option value="Mobile">Mobile</option>
+                  <option value="Tablet">Tablet</option>
+                  <option value="TV">TV</option>
+                  <option value="Other">Other</option>
                   <option value="Phone">Phone</option>
                   <option value="Battery">Battery</option>
                   <option value="Cable">Cable</option>

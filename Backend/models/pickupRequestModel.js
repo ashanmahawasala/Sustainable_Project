@@ -41,6 +41,13 @@ const pickupRequestSchema = new mongoose.Schema(
       trim: true,
     },
 
+    // Device category from EwasteItem (e.g., Mobile/Tablet/Laptop)
+    deviceType: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
     // ===== NEW: store ewaste item info in pickup request =====
     condition: {
       type: String,
